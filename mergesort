@@ -1,0 +1,70 @@
+#include <iostream>
+#include <sstream>
+using namespace std;
+
+bool read(int *a, int len) {
+	string line;
+	getline(cin, line);
+	istringstream stream(line);
+	for (unsigned int i = 0; i < len; ++i) {
+		if (!(stream >> a[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void mergesort(int *a, int l, int r) {
+	int *b = new int[r+1];
+	if (r == l)
+		return;
+	if (r - l == 1) {
+		if (a[r] < a[l])
+			swap(a[r], a[l]);
+		return;
+	}
+	int m = (r + l) / 2;
+	mergesort( a, l, m);
+	mergesort(a, m + 1, r);
+	
+	int l1 = l;
+	int r1 = m + 1;
+	int c = 0;
+	while (r - l + 1 != c) {
+		if (l1 > m)
+			b[c++] = a[r1++];
+		else if (r1 > r)
+			b[c++] = a[l1++];
+		else if (a[l1] > a[r1])
+			b[c++] = a[r1++];
+		else b[c++] = a[l1++];
+
+	}
+	for (int i = 0; i < c; i++)
+		a[i + l] = b[i];
+}
+
+
+int main() {
+	int len; string line, o;
+	getline(cin, o);
+	istringstream stream(o);
+	if (!(stream >> len || len > 0)) {
+		cout << "An error has occuried while reading input data.";
+		return 0;
+	}
+	int *a = new int[len];
+	read(a, len);
+	for (int i = 0; i < len; i++) {
+
+		if (a[i] < 0) {
+
+			cout << "An error has occuried while reading input data.";
+
+			return 0;
+		}
+	}
+	mergesort(a, 0, len - 1);
+	for (int i = 0; i < len; i++) { cout << a[i] << ' '; }
+	return 0;
+}
